@@ -1,0 +1,169 @@
+{
+  "magic": "E!vIA5L86J2I",
+  "timestamp": "2020-08-23T00:48:48.644798+00:00",
+  "repo": "ShivanKaul/draft-ssahib-xot-padding",
+  "labels": [
+    {
+      "name": "bug",
+      "description": "Something isn't working",
+      "color": "d73a4a"
+    },
+    {
+      "name": "documentation",
+      "description": "Improvements or additions to documentation",
+      "color": "0075ca"
+    },
+    {
+      "name": "duplicate",
+      "description": "This issue or pull request already exists",
+      "color": "cfd3d7"
+    },
+    {
+      "name": "enhancement",
+      "description": "New feature or request",
+      "color": "a2eeef"
+    },
+    {
+      "name": "help wanted",
+      "description": "Extra attention is needed",
+      "color": "008672"
+    },
+    {
+      "name": "invalid",
+      "description": "This doesn't seem right",
+      "color": "e4e669"
+    },
+    {
+      "name": "question",
+      "description": "Research questions",
+      "color": "d876e3"
+    },
+    {
+      "name": "wontfix",
+      "description": "This will not be worked on",
+      "color": "ffffff"
+    }
+  ],
+  "issues": [
+    {
+      "number": 1,
+      "id": "MDU6SXNzdWU2NzgwMTA0NjA=",
+      "title": "Splitting up AXFR responses by size",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/issues/1",
+      "state": "OPEN",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "question"
+      ],
+      "body": "\"How do most open source implementations split up AXFR responses? A fixed number of records per response or as many as they can fit in a TCP message length of 65535 bytes? (Note RFC5936 talks about supporting old clients that expect one record per response!).\"\r\n\r\nWill need to set up NSD and Knot Auth primaries to test this...\r\n",
+      "createdAt": "2020-08-12T22:12:31Z",
+      "updatedAt": "2020-08-20T18:00:28Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 2,
+      "id": "MDU6SXNzdWU2NzgwMTQzMzI=",
+      "title": "AXFR responses order",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/issues/2",
+      "state": "OPEN",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "question"
+      ],
+      "body": "\"Do they send records in a fixed or random order - would this allow anything about the zone contents to be inferred by watching different message sizes over time if they are not all padded to the same size\"\r\n\r\nnot sure this actually matters since an observer can only see a stream of packets which might contain one or more DNS messages",
+      "createdAt": "2020-08-12T22:22:00Z",
+      "updatedAt": "2020-08-20T18:00:52Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 3,
+      "id": "MDU6SXNzdWU2NzgwMjA2Njk=",
+      "title": "What do clients do if they receive an empty responses?",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/issues/3",
+      "state": "OPEN",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "question"
+      ],
+      "body": "",
+      "createdAt": "2020-08-12T22:37:57Z",
+      "updatedAt": "2020-08-12T22:37:57Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 4,
+      "id": "MDU6SXNzdWU2NzgwMjIwOTk=",
+      "title": "Block size padding recommendation for AXFR",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/issues/4",
+      "state": "OPEN",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "enhancement"
+      ],
+      "body": "",
+      "createdAt": "2020-08-12T22:42:08Z",
+      "updatedAt": "2020-08-12T22:45:49Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 6,
+      "id": "MDU6SXNzdWU2ODI5NzkzODk=",
+      "title": "Name compression",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/issues/6",
+      "state": "OPEN",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [
+        "question"
+      ],
+      "body": "Does name compression practically limit the size of the real DNS payload (i.e. excluding padding) to 16kb?\r\nI think Mark Andrews pointed out that with \u2018smart\u2019 compression the packet could still be 64kB with pointers pointing back to the preceding 16kb but not sure any implementation does this..\r\n",
+      "createdAt": "2020-08-20T18:02:37Z",
+      "updatedAt": "2020-08-20T18:02:51Z",
+      "closedAt": null,
+      "comments": []
+    }
+  ],
+  "pulls": [
+    {
+      "number": 5,
+      "id": "MDExOlB1bGxSZXF1ZXN0NDY3NTgwMzQ5",
+      "title": "Add description about block padding strategies",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/pull/5",
+      "state": "MERGED",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "Re-add text around padding from https://github.com/hanzhang0116/hzpa-dprive-xfr-over-tls/commit/976cb6108a2d11a1e71edcdc672ad9763e780af7",
+      "createdAt": "2020-08-13T19:06:39Z",
+      "updatedAt": "2020-08-20T17:59:27Z",
+      "baseRepository": "ShivanKaul/draft-ssahib-xot-padding",
+      "baseRefName": "master",
+      "baseRefOid": "3591dd43512b703329c6d194caf9e821d398ae29",
+      "headRepository": "ShivanKaul/draft-ssahib-xot-padding",
+      "headRefName": "initial",
+      "headRefOid": "dce96f6c203178f880a8bd2648550e7665e6ca8f",
+      "closedAt": "2020-08-20T17:59:27Z",
+      "mergedAt": "2020-08-20T17:59:27Z",
+      "mergedBy": "ShivanKaul",
+      "mergeCommit": {
+        "oid": "c46c1b25e7cbdfdca748429ab830151d328bbb98"
+      },
+      "comments": [],
+      "reviews": []
+    }
+  ]
+}
