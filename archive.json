@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-08-23T00:48:48.644798+00:00",
+  "timestamp": "2020-10-29T01:13:35.283498+00:00",
   "repo": "ShivanKaul/draft-ssahib-xot-padding",
   "labels": [
     {
@@ -132,6 +132,22 @@
       "body": "Does name compression practically limit the size of the real DNS payload (i.e. excluding padding) to 16kb?\r\nI think Mark Andrews pointed out that with \u2018smart\u2019 compression the packet could still be 64kB with pointers pointing back to the preceding 16kb but not sure any implementation does this..\r\n",
       "createdAt": "2020-08-20T18:02:37Z",
       "updatedAt": "2020-08-20T18:02:51Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 7,
+      "id": "MDU6SXNzdWU3MzE1NDM3Mjc=",
+      "title": "Padding for A/IXFR requests",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/issues/7",
+      "state": "OPEN",
+      "author": "ShivanKaul",
+      "authorAssociation": "OWNER",
+      "assignees": [],
+      "labels": [],
+      "body": "We currently specify that XFR responses should be padded according to the Block-Length Padding strategy recommended in [RFC8467]. We should also specify that the requests should be padded so as to protect the domain name.",
+      "createdAt": "2020-10-28T15:22:27Z",
+      "updatedAt": "2020-10-28T15:22:27Z",
       "closedAt": null,
       "comments": []
     }
