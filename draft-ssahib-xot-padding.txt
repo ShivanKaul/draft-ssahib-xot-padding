@@ -5,9 +5,9 @@
 dprive                                                          S. Sahib
 Internet-Draft                                                  H. Zhang
 Intended status: Informational                            Salesforce.com
-Expires: 21 February 2021                                   S. Dickinson
+Expires: 6 May 2021                                         S. Dickinson
                                                               Sinodun IT
-                                                          20 August 2020
+                                                         2 November 2020
 
 
          Padding Considerations for DNS Zone Transfers-over-TLS
@@ -42,7 +42,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 21 February 2021.
+   This Internet-Draft will expire on 6 May 2021.
 
 Copyright Notice
 
@@ -53,9 +53,9 @@ Copyright Notice
 
 
 
-Sahib, et al.           Expires 21 February 2021                [Page 1]
+Sahib, et al.              Expires 6 May 2021                   [Page 1]
 
-Internet-Draft       Padding Considerations for XoT          August 2020
+Internet-Draft       Padding Considerations for XoT        November 2020
 
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -70,18 +70,49 @@ Internet-Draft       Padding Considerations for XoT          August 2020
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   2
-   2.  Conventions and Definitions . . . . . . . . . . . . . . . . .   2
-   3.  Padding for AXoT  . . . . . . . . . . . . . . . . . . . . . .   2
-   4.  Padding for IXoT  . . . . . . . . . . . . . . . . . . . . . .   4
-   5.  Security Considerations . . . . . . . . . . . . . . . . . . .   5
-   6.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   5
-   7.  Normative References  . . . . . . . . . . . . . . . . . . . .   5
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .   5
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   5
+   2.  Conventions and Definitions . . . . . . . . . . . . . . . . .   3
+   3.  Threat Model  . . . . . . . . . . . . . . . . . . . . . . . .   3
+     3.1.  A primary server hosts multiple zones and persistent tcp
+           connection is used  . . . . . . . . . . . . . . . . . . .   3
+     3.2.  A primary server hosts multiple zones and persistent tcp
+           connection is not used  . . . . . . . . . . . . . . . . .   3
+     3.3.  A primary server hosts a single zone  . . . . . . . . . .   3
+   4.  Padding for AXoT  . . . . . . . . . . . . . . . . . . . . . .   3
+   5.  Padding for IXoT  . . . . . . . . . . . . . . . . . . . . . .   5
+   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   8.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
+   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .   6
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
 
 1.  Introduction
 
-   TODO
+   It's not uncommon that in some companyies, each of their customers is
+   given a subdomain under the customers' domains.  In this case, if the
+   attackers capture the AXoT traffic, they can estimate the number of
+   customers in these companies.  Similarly, when a company has a new
+   customer, a subdomain will be created.  If the attackers capture the
+   encrypted IXoT traffic, they can estimate the number of new domains
+   included in IXoT.  After collecting IXoT for a period of time and
+   doing some analysis, the attackers can even extract more business
+   information, for example, whether the company is getting more
+   bussiness than the past mont or it is losing their business.
+
+   In this draft, we introduce the padding for AXoT and IXoT to i) to
+   obfuscate the actual size of the transferred zone to minimize
+   information leakage about the entire contents of the zone. and 2) to
+   obfuscate the incremental changes to the zone between SOA updates to
+   minimize information leakage about zone update activity and growth.
+
+
+
+
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 2]
+
+Internet-Draft       Padding Considerations for XoT        November 2020
+
 
 2.  Conventions and Definitions
 
@@ -91,7 +122,40 @@ Table of Contents
    14 [RFC2119] [RFC8174] when, and only when, they appear in all
    capitals, as shown here.
 
-3.  Padding for AXoT
+3.  Threat Model
+
+   In the thread models, we assume the attackers are interested in a
+   single zone, but the thread models can be generalized to any number
+   of zones.
+
+3.1.  A primary server hosts multiple zones and persistent tcp
+      connection is used
+
+   If a primary server hosts multiple zones and persistent tcp
+   connection is used for AXoT and IXoT of these zones, then the
+   attackers can not tell the the length of AXoT nor IXoT responses for
+   the zone to attack, because the attackers only see the encrypted
+   streams and they cannot differentiate the streams for different
+   zones.
+
+3.2.  A primary server hosts multiple zones and persistent tcp
+      connection is not used
+
+   If a primary server hosts multiple zones but persistent tcp
+   connection is not used for AXoT and IXoT of these zones, then each
+   AXoT and IXoT will be transfered in a new connections.  When
+   attackers see streams between the primary and secondary, it is not
+   obvious which zone is being transfered because the primary hosts
+   multiple zones.  However, the attackers can query the SOA records for
+   all the zones, and correlate the serial numbers with the size of
+   streams, then they might be able to find out the zone.
+
+3.3.  A primary server hosts a single zone
+
+   Attackers can get the length of AXoT and IXoT responses for the zone
+   to attack.
+
+4.  Padding for AXoT
 
    As mentioned in [I-D.draft-ietf-dprive-xfr-over-tls], the goal of
    padding AXoT responses would be two fold:
@@ -99,20 +163,19 @@ Table of Contents
    *  to obfuscate the actual size of the transferred zone to minimize
       information leakage about the entire contents of the zone.
 
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 3]
+
+Internet-Draft       Padding Considerations for XoT        November 2020
+
+
    *  to obfuscate the incremental changes to the zone between SOA
       updates to minimize information leakage about zone update activity
       and growth.
 
    A simplistic option, following the premise of the Block-Length
    Padding strategy recommended in [RFC8467], would be to specify
-
-
-
-
-Sahib, et al.           Expires 21 February 2021                [Page 2]
-
-Internet-Draft       Padding Considerations for XoT          August 2020
-
 
    a 'message size' to which each individual AXFR response would always
    be padded (with a maximum value of 65353 bytes) and a compatible
@@ -153,6 +216,16 @@ Internet-Draft       Padding Considerations for XoT          August 2020
    block size much larger than the current zone size would provide
    increased protection but with increased overhead.
 
+
+
+
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 4]
+
+Internet-Draft       Padding Considerations for XoT        November 2020
+
+
    As with any padding strategy the trade-off between increased
    bandwidth and processing due to the larger size and number of padded
    DNS messages and the corresponding gain in confidentiality must be
@@ -162,19 +235,11 @@ Internet-Draft       Padding Considerations for XoT          August 2020
    protocol, limits the space for EDNS(0) options.  Since padding will
    reduce the message space available to other EDNS(0) options, the
    "Padding" option MUST be the last EDNS(0) option applied before a DNS
-
-
-
-Sahib, et al.           Expires 21 February 2021                [Page 3]
-
-Internet-Draft       Padding Considerations for XoT          August 2020
-
-
    message is sent.  In particular for AXFR, that means that if the
    message is to be signed with, e.g., TSIG this must be done before the
    padding is applied.
 
-4.  Padding for IXoT
+5.  Padding for IXoT
 
    As mentioned in [I-D.draft-ietf-dprive-xfr-over-tls], the goal of
    padding IXoT responses is to minimize leakage about zone update
@@ -208,6 +273,15 @@ Internet-Draft       Padding Considerations for XoT          August 2020
    contents and transfer pattern is likely to be required in order to
    select the optimal block size for a zone.
 
+
+
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 5]
+
+Internet-Draft       Padding Considerations for XoT        November 2020
+
+
    Primary implementations SHOULD provide a configurable message block
    size based padding mechanism.  As noted in [@RFC8467], the maximum
    message length, as dictated by the protocol, limits the space for
@@ -217,24 +291,15 @@ Internet-Draft       Padding Considerations for XoT          August 2020
    particular for AXFR, that means that if the message is to be signed
    with, e.g., TSIG this must be done before the padding is applied.
 
-
-
-
-
-Sahib, et al.           Expires 21 February 2021                [Page 4]
-
-Internet-Draft       Padding Considerations for XoT          August 2020
-
-
-5.  Security Considerations
+6.  Security Considerations
 
    TODO Security
 
-6.  IANA Considerations
+7.  IANA Considerations
 
    This document has no IANA actions.
 
-7.  Normative References
+8.  Normative References
 
    [I-D.draft-ietf-dprive-xfr-over-tls]
               Toorop, W., Dickinson, S., Sahib, S., Aras, P., and A.
@@ -263,6 +328,16 @@ Authors' Addresses
    Email: ssahib@salesforce.com
 
 
+
+
+
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 6]
+
+Internet-Draft       Padding Considerations for XoT        November 2020
+
+
    Han Zhang
    Salesforce.com
 
@@ -277,4 +352,41 @@ Authors' Addresses
 
 
 
-Sahib, et al.           Expires 21 February 2021                [Page 5]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 7]
