@@ -140,6 +140,22 @@ Primary implementations SHOULD provide a configurable message block size based p
 limits the space for EDNS(0) options. Since padding will reduce the message space available to other EDNS(0) options, the "Padding" option MUST be the last EDNS(0) option applied before a DNS message is sent. In particular for AXFR, that means that if the message is to be signed with, e.g., TSIG this must be done before the padding is applied.
 
 
+# Configurable Parameters
+When we decide the configurable parameters - zone block size, message block size, we should consider the following things:
+* The number of zones can be transfered between the primary and a secondary
+* The frequency that the zone is updated
+* Persistent connection is used or not
+* Size of the zone
+* The zone is signed or not
+
+## Zone Block Size
+Zone block size should be at least two times of the original zone length. As we cannot hide whether the zone is signed, and NSEC or NSEC3 is used, the zone block size should also be at least two times of the length of the signed zone.
+
+## Message Block Size
+* AXoT: As the AXoT reponses are usually large, the signed zones and unsigned zones can use the same message block size.
+* IXot: For the same change, a signed zone has more reponses to send than an unsigned zone, the message block size for a signed zone should be larger for an unsigned zone.
+ 
+
 # Security Considerations
 
 TODO Security
