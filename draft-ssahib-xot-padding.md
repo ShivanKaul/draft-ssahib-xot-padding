@@ -56,8 +56,9 @@ informative:
 
 # Introduction
 
-TODO
+It's not uncommon that in some companyies, each of their customers is given a subdomain under the customers' domains. In this case, if the attackers capture the AXoT traffic, they can estimate the number of customers in these companies. Similarly, when a company has a new customer, a subdomain will be created. If the attackers capture the encrypted IXoT traffic, they can estimate the number of new domains included in IXoT. After collecting IXoT for a period of time and doing some analysis, the attackers can even extract more business information, for example, whether the company is getting more bussiness than the past mont or it is losing their business.
 
+In this draft, we introduce the padding for AXoT and IXoT to i) to obfuscate the actual size of the transferred zone to minimize information leakage about the entire contents of the zone. and 2) to obfuscate the incremental changes to the zone between SOA updates to minimize information leakage about zone update activity and growth.
 
 # Conventions and Definitions
 
@@ -66,12 +67,26 @@ The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD",
 document are to be interpreted as described in BCP 14 {{RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
+# Threat Model
+In the thread models, we assume the attackers are interested in a single zone, but the thread models can be generalized to any number of zones. 
+
+## A primary server hosts multiple zones and persistent tcp connection is used 
+If a primary server hosts multiple zones and persistent tcp connection is used for AXoT and IXoT of these zones, then the attackers can not tell the the length of AXoT nor IXoT responses for the zone to attack, because the attackers only see the encrypted streams and they cannot differentiate the streams for different zones.
+
+## A primary server hosts multiple zones and persistent tcp connection is not used 
+If a primary server hosts multiple zones but persistent tcp connection is not used for AXoT and IXoT of these zones, then each AXoT and IXoT will be transfered in a new connections. When attackers see streams between the primary and secondary, it is not obvious which zone is being transfered because the primary hosts multiple zones. However, the attackers can query the SOA records for all the zones, and correlate the serial numbers with the size of streams, then they might be able to find out the zone.
+
+## A primary server hosts a single zone
+Attackers can get the length of AXoT and IXoT responses for the zone to attack.
+
+
 # Padding for AXoT
 
 As mentioned in {{I-D.draft-ietf-dprive-xfr-over-tls}}, the goal of padding AXoT responses would be two fold:
 
 - to obfuscate the actual size of the transferred zone to minimize information leakage about the entire contents of the zone.
 - to obfuscate the incremental changes to the zone between SOA updates to minimize information leakage about zone update activity and growth.
+
 
 
 A simplistic option, following the premise of the Block-Length Padding strategy recommended in [RFC8467], would be to specify
