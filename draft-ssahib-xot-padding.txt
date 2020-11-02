@@ -79,11 +79,14 @@ Table of Contents
      3.3.  A primary server hosts a single zone  . . . . . . . . . .   3
    4.  Padding for AXoT  . . . . . . . . . . . . . . . . . . . . . .   3
    5.  Padding for IXoT  . . . . . . . . . . . . . . . . . . . . . .   5
-   6.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
-   7.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
-   8.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .   6
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   6
+   6.  Configurable Parameters . . . . . . . . . . . . . . . . . . .   6
+     6.1.  Zone Block Size . . . . . . . . . . . . . . . . . . . . .   6
+     6.2.  Message Block Size  . . . . . . . . . . . . . . . . . . .   6
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .   6
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .   6
+   9.  Normative References  . . . . . . . . . . . . . . . . . . . .   6
+   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .   7
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .   7
 
 1.  Introduction
 
@@ -103,9 +106,6 @@ Table of Contents
    information leakage about the entire contents of the zone. and 2) to
    obfuscate the incremental changes to the zone between SOA updates to
    minimize information leakage about zone update activity and growth.
-
-
-
 
 
 
@@ -291,21 +291,52 @@ Internet-Draft       Padding Considerations for XoT        November 2020
    particular for AXFR, that means that if the message is to be signed
    with, e.g., TSIG this must be done before the padding is applied.
 
-6.  Security Considerations
+6.  Configurable Parameters
+
+   When we decide the configurable parameters - zone block size, message
+   block size, we should consider the following things: * The number of
+   zones can be transfered between the primary and a secondary * The
+   frequency that the zone is updated * Persistent connection is used or
+   not * Size of the zone * The zone is signed or not
+
+6.1.  Zone Block Size
+
+   Zone block size should be at least two times of the original zone
+   length.  As we cannot hide whether the zone is signed, and NSEC or
+   NSEC3 is used, the zone block size should also be at least two times
+   of the length of the signed zone.
+
+6.2.  Message Block Size
+
+   *  AXoT: As the AXoT reponses are usually large, the signed zones and
+      unsigned zones can use the same message block size.
+
+   *  IXot: For the same change, a signed zone has more reponses to send
+      than an unsigned zone, the message block size for a signed zone
+      should be larger for an unsigned zone.
+
+7.  Security Considerations
 
    TODO Security
 
-7.  IANA Considerations
+8.  IANA Considerations
 
    This document has no IANA actions.
 
-8.  Normative References
+9.  Normative References
 
    [I-D.draft-ietf-dprive-xfr-over-tls]
               Toorop, W., Dickinson, S., Sahib, S., Aras, P., and A.
               Mankin, "DNS Zone Transfer-over-TLS", 2020,
               <https://datatracker.ietf.org/doc/draft-ietf-dprive-xfr-
               over-tls>.
+
+
+
+Sahib, et al.              Expires 6 May 2021                   [Page 6]
+
+Internet-Draft       Padding Considerations for XoT        November 2020
+
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -328,16 +359,6 @@ Authors' Addresses
    Email: ssahib@salesforce.com
 
 
-
-
-
-
-
-Sahib, et al.              Expires 6 May 2021                   [Page 6]
-
-Internet-Draft       Padding Considerations for XoT        November 2020
-
-
    Han Zhang
    Salesforce.com
 
@@ -348,27 +369,6 @@ Internet-Draft       Padding Considerations for XoT        November 2020
    Sinodun IT
 
    Email: sara@sinodun.com
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
