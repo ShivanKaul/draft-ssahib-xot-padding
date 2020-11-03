@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-10-29T01:13:35.283498+00:00",
+  "timestamp": "2020-11-03T00:43:07.826201+00:00",
   "repo": "ShivanKaul/draft-ssahib-xot-padding",
   "labels": [
     {
@@ -177,6 +177,62 @@
       "mergedBy": "ShivanKaul",
       "mergeCommit": {
         "oid": "c46c1b25e7cbdfdca748429ab830151d328bbb98"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 8,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTEzNzQ5MDY2",
+      "title": "Add some introduction and thread model",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/pull/8",
+      "state": "MERGED",
+      "author": "hanzhang0116",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-11-02T02:41:10Z",
+      "updatedAt": "2020-11-02T06:28:46Z",
+      "baseRepository": "ShivanKaul/draft-ssahib-xot-padding",
+      "baseRefName": "master",
+      "baseRefOid": "c46c1b25e7cbdfdca748429ab830151d328bbb98",
+      "headRepository": "hanzhang0116/draft-ssahib-xot-padding",
+      "headRefName": "master",
+      "headRefOid": "f1bf12862f4f6bc49a827df886be9e82b51ab2bd",
+      "closedAt": "2020-11-02T06:28:46Z",
+      "mergedAt": "2020-11-02T06:28:46Z",
+      "mergedBy": "hanzhang0116",
+      "mergeCommit": {
+        "oid": "04dd7e4d77688d9f091f7ec3d1bc153006b24bc2"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 9,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTEzODU1NDIy",
+      "title": "add section of configurable parameters",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/pull/9",
+      "state": "MERGED",
+      "author": "hanzhang0116",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-11-02T07:27:26Z",
+      "updatedAt": "2020-11-02T07:27:34Z",
+      "baseRepository": "ShivanKaul/draft-ssahib-xot-padding",
+      "baseRefName": "master",
+      "baseRefOid": "04dd7e4d77688d9f091f7ec3d1bc153006b24bc2",
+      "headRepository": "hanzhang0116/draft-ssahib-xot-padding",
+      "headRefName": "master",
+      "headRefOid": "29fe50311ffd41c52232af07e1b614160feefc2f",
+      "closedAt": "2020-11-02T07:27:33Z",
+      "mergedAt": "2020-11-02T07:27:33Z",
+      "mergedBy": "hanzhang0116",
+      "mergeCommit": {
+        "oid": "4de5da636cc73cb567c13286b879fae033bdac55"
       },
       "comments": [],
       "reviews": []
