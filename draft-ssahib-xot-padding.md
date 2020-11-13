@@ -50,15 +50,15 @@ informative:
 
 --- abstract
 
-{{I-D.draft-ietf-dprive-xfr-over-tls}} specifies use of TLS to prevent zone content collection via passive monitoring of zone transfers. This document lists considerations for various padding policies and provides recommendations.
+{{I-D.draft-ietf-dprive-xfr-over-tls}} specifies use of TLS to prevent zone content collection via passive monitoring of zone transfers (Zone Transfer over TLS: XoT). RFC 7830 specifies the EDNS(0) 'Padding' option, but does not specify the actual padding length for specific applications. This memo lists the possible options ("Padding Policies") for using padding in combination with XoT and discusses the implications of each of these options.
 
 --- middle
 
 # Introduction
 
-It's not uncommon that in some companyies, each of their customers is given a subdomain under the customers' domains. In this case, if the attackers capture the AXoT traffic, they can estimate the number of customers in these companies. Similarly, when a company has a new customer, a subdomain will be created. If the attackers capture the encrypted IXoT traffic, they can estimate the number of new domains included in IXoT. After collecting IXoT for a period of time and doing some analysis, the attackers can even extract more business information, for example, whether the company is getting more bussiness than the past mont or it is losing their business.
+{{I-D.draft-ietf-dprive-xfr-over-tls}} outlines the threat model considered in the design of XoT which focusses on the protection of the zone contents tranfered in zone transfer responses. It briefly outlines the motivations for also padding those zone transfer responses but does not provide detailed guidance on what padding policy should be used. This document attempts to enumerate in more detail the meta data about the zone contents that might still be deduced or infered by inspecting encrypted zone transfers and proposes padding policies to mitigate the leakage of such information.
 
-In this draft, we introduce the padding for AXoT and IXoT to i) to obfuscate the actual size of the transferred zone to minimize information leakage about the entire contents of the zone. and 2) to obfuscate the incremental changes to the zone between SOA updates to minimize information leakage about zone update activity and growth.
+This draft provides separate discussions on padding of full zone transfers to obfuscate the actual size of the transferred zone, and on padding incremental zone transfers to obfuscate the incremental changes to the zone to minimize information leakage about zone update activity and growth.
 
 # Conventions and Definitions
 
@@ -68,16 +68,47 @@ document are to be interpreted as described in BCP 14 {{RFC2119}} {{!RFC8174}}
 when, and only when, they appear in all capitals, as shown here.
 
 # Threat Model
-In the thread models, we assume the attackers are interested in a single zone, but the thread models can be generalized to any number of zones. 
 
-## A primary server hosts multiple zones and persistent tcp connection is used 
-If a primary server hosts multiple zones and persistent tcp connection is used for AXoT and IXoT of these zones, then the attackers can not tell the the length of AXoT nor IXoT responses for the zone to attack, because the attackers only see the encrypted streams and they cannot differentiate the streams for different zones.
+Even when using XoT to protect transfered zone contents, there are other sources of information about zones that an attacker can leverage to gather information about the zone and its update activity. We assume the attacker in question is able to passively monitor the traffic to at least one of the authoritative nameservers for the zone (hence the requirement for XoT).
 
-## A primary server hosts multiple zones and persistent tcp connection is not used 
-If a primary server hosts multiple zones but persistent tcp connection is not used for AXoT and IXoT of these zones, then each AXoT and IXoT will be transfered in a new connections. When attackers see streams between the primary and secondary, it is not obvious which zone is being transfered because the primary hosts multiple zones. However, the attackers can query the SOA records for all the zones, and correlate the serial numbers with the size of streams, then they might be able to find out the zone.
+Based on this we additionally assume that for a particular zone the attacker:
 
-## A primary server hosts a single zone
-Attackers can get the length of AXoT and IXoT responses for the zone to attack.
+* knows that the zone exists and is hosted authoritatively on the nameserver
+  (e.g., by actively monitoring clear text traffic from recursives to the
+  authoritative)
+* knows some of the zone contents based on the clear text traffic, although only those names that are actively queried
+* knows all the published nameservers for the zone (NS records)
+* can actively monitor the SOA for the zone via DNS queries to the published nameservers
+* can directly observe when NOTIFYs are sent by the primary
+* can directly observe when unencrypted SOA queries are made by the secondary
+* can observe encrypted TLS traffic flows to other servers and can most likely infer the existance of 'hidden' primaries or secondaries involved in zone transfers
+* knows if the zone is DNSSEC signed and the signature lifetimes
+
+As such, the attacker already knows both the frequency of zone SOA updates (although there may be a propagation delay in those updates reaching the monitored nameserver(s)), and some or possibly all of the members of the 'zone transfer group' as defined in {{I-D.draft-ietf-dprive-xfr-over-tls}}.
+
+The extent to which an attacker can enumerate the zone depends on if it is DNSSEC signed, and whether it uses NSEC or NSEC3. Since NSEC are trivially enumerated, we confine this analysis to the use of Xot for either unsigned or NSEC3 signed zones. 
+
+For dynamically updated zones, we assume in this analysis that any DNS dynamic updates (or similar) that can also be observed by the attacker are encrypted/protected such that they provide no more information than the attacker already has gains via the mechanisms above. 
+
+On this basis, the knowledge that an attacker could still gather by monitoring encrypted zone transfers and correlating encrypted traffic with unencrypted events includes:
+
+* (AXFR) Zone size at a given point in time
+* (AXFR) Zone growth over time
+* (IXFR) An estimated range of the number of records modified in a given update
+* (IXFR) An esimate of the zone size for dynamic DNSSEC signed zones that are rarely updated (due to IXFRs triggered due to resigning)
+* ??
+
+Factors that will complicate or defeat the extraction of such data by traffic analysis include:
+
+* Do the pair of servers involved in transfers both host more than one zone?
+   * Do they re-use the same connections for all the zones?
+   * Do they re-use the same connections for both AXFR and IXFR?
+* If the zone is DNSSEC signed and how
+* ??
+
+## Why is such data leakage sensitive?
+
+It's not uncommon that in some organisations, the name of the zone might indicate its purpose and therefore knowing the size of the zone or how active it is might reveal general information about that organisations practices or activities. Depending on the organisation this could extend to information about specific individual, companies or growth in specific business areas.
 
 
 # Padding for AXoT
@@ -87,33 +118,35 @@ As mentioned in {{I-D.draft-ietf-dprive-xfr-over-tls}}, the goal of padding AXoT
 - to obfuscate the actual size of the transferred zone to minimize information leakage about the entire contents of the zone.
 - to obfuscate the incremental changes to the zone between SOA updates to minimize information leakage about zone update activity and growth.
 
-
-
-A simplistic option, following the premise of the Block-Length Padding strategy recommended in [RFC8467], would be to specify
-
-a 'message size' to which each individual AXFR response would always be padded (with a maximum value of 65353 bytes) and
-a compatible 'zone block size' for a zone to which the sum total of all the AXFR responses should be padded. This could equivalently be specified as a 'zone number of AXFR responses block size'.
-Primary implementations SHOULD provide a configurable block-size based padding mechanism.
-
-This second requirement is likely to require an implementation to create 'empty' AXFR responses in order to pad a zone to the zone block size. That is, AXFR responses that contain no RRs apart from the EDNS(0) option for padding. However, as will existing AXFR, the last message sent MUST contain the same SOA that was in the first message of the AXFR response series in order to signal the conclusion of the zone transfer.
-
-[RFC5936] says:
-
-"Each AXFR response message SHOULD contain a sufficient number of RRs
-to reasonably amortize the per-message overhead, up to the largest
-number that will fit within a DNS message (taking the required
-content of the other sections into account, as described below)."
-'Empty' AXoT responses generated in order to meet a padding requirement are exempt from the above statement. Secondary implementations MUST be resilient to receiving padded AXFR responses including 'empty' AXFR response that contain only padding.
-
-Observation of the zone transfers would then reveal only zone block size step changes in the total zone size (if the zone size changed sufficiently) obfuscating the smaller fluctuations.
-
-Choosing a message size of less than 65535 only really makes sense for small zones that can be transferred in a single response (in which case the zone block size can be set to the same value). Choosing a zone block size close to the current zone size would provide some protection with a minimal overhead. Choosing a zone block size much larger than the current zone size would provide increased protection but with increased overhead.
-
 As with any padding strategy the trade-off between increased bandwidth and processing due to the larger size and number of padded DNS messages and the corresponding gain in confidentiality must be carefully considered.
 
 As noted in [RFC8467], the maximum message length, as dictated by the protocol, limits the space for EDNS(0) options. Since padding will reduce the message space available to other EDNS(0) options, the "Padding" option MUST be the last EDNS(0) option applied before a DNS message is sent. In particular for AXFR, that means that if the message is to be signed with, e.g., TSIG this must be done before the padding is applied.
 
+## Zone block size
+A simplistic option, following the premise of the Block-Length Padding strategy recommended in [RFC8467], would be to simply specify a 'zone block size' for a zone - the sum total of all the AXFR responses should be padded to a multiple of this size. The number of responses used to reach this size could additionally be specified, or this could be left to the implementation. In either case, the size to which each individual response is padded MUST be the same in order to obfuscate any pattern in the underlying data. The details of how this is acheived can be implementation specific but a simple option would be to 
 
+* put a fixed number of RRs in each response while there is data to send
+* pad the response to a fixed size (S), 
+* adding 'empty' responses padded to the same size S prior to sending the final response
+* send the final response (containing the last SOA record), padded to size S
+
+The implementation would be required to perform some precalculation to estimate the size of the zone on the wire in order to know the number of responses that will be required. 
+
+Observation of the zone transfers would then reveal only zone block size step changes in the total zone size (if the zone size changed sufficiently) obfuscating the smaller fluctuations.
+
+Choosing a zone block size close to the current zone size would provide some protection with a minimal overhead. Choosing a zone block size much larger than the current zone size would provide increased protection but with increased overhead.
+
+## Zone step size
+
+An alternative approach that could be taken is to specify a minimum zone size and an block size for incremental overhead on that block size.....
+
+
+
+## Recommendations
+
+Primary implementations SHOULD provide a configurable zone block size based padding mechanism.
+
+## Examples
 
 # Padding for IXoT
 
