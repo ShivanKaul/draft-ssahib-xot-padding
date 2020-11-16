@@ -69,26 +69,26 @@ when, and only when, they appear in all capitals, as shown here.
 
 # Threat Model
 
-Even when using XoT to protect transfered zone contents, there are other sources of information about zones that an attacker can leverage to gather information about the zone and its update activity. We assume the attacker in question is able to passively monitor the traffic to at least one of the authoritative nameservers for the zone (hence the requirement for XoT).
+Even when using XoT to protect transfered zone contents, there are other sources of information about zones that an attacker can leverage to gather information about the zone and its update activity. We assume the attacker in question is able to passively monitor the traffic on a link between two of the authoritative nameservers for the zone (hence the requirement for XoT).
 
-Based on this we additionally assume that for a particular zone the attacker:
+NOTE: We explicitly exclude the case where an attacker can actively monitor 
 
-* knows that the zone exists and is hosted authoritatively on the nameserver
-  (e.g., by actively monitoring clear text traffic from recursives to the
-  authoritative)
-* knows some of the zone contents based on the clear text traffic, although only those names that are actively queried
+* any of the query traffic to the authoritative in this analysis and/or
+* any channel involved in unencrypted zone updates (e.g. DNS Dynamic updates) 
+
+If this is the case it introduces a large number of variables with regard to the other data the attacker might have access to, but they do not fundamentally change the conclusions here.
+
+On this basis we additionally assume that for a particular zone the attacker:
+
+* knows that the zone exists and is hosted authoritatively on the nameserver since they can
+    * can directly observe when NOTIFYs are sent by the primary
+    * can directly observe when unencrypted SOA queries are made by the secondary
+    * or obtain this information via other out of band methods
 * knows all the published nameservers for the zone (NS records)
-* can actively monitor the SOA for the zone via DNS queries to the published nameservers
-* can directly observe when NOTIFYs are sent by the primary
-* can directly observe when unencrypted SOA queries are made by the secondary
-* can observe encrypted TLS traffic flows to other servers and can most likely infer the existance of 'hidden' primaries or secondaries involved in zone transfers
+* can actively and periodically directly query for the SOA for the zone via DNS queries to the published nameservers (although there may be a propagation delay in this compared to updates at the monitored servers)
 * knows if the zone is DNSSEC signed and the signature lifetimes
 
-As such, the attacker already knows both the frequency of zone SOA updates (although there may be a propagation delay in those updates reaching the monitored nameserver(s)), and some or possibly all of the members of the 'zone transfer group' as defined in {{I-D.draft-ietf-dprive-xfr-over-tls}}.
-
-The extent to which an attacker can enumerate the zone depends on if it is DNSSEC signed, and whether it uses NSEC or NSEC3. Since NSEC are trivially enumerated, we confine this analysis to the use of Xot for either unsigned or NSEC3 signed zones. 
-
-For dynamically updated zones, we assume in this analysis that any DNS dynamic updates (or similar) that can also be observed by the attacker are encrypted/protected such that they provide no more information than the attacker already has gains via the mechanisms above. 
+The extent to which an attacker can enumerate the zone depends on whether it is DNSSEC signed, and whether it uses NSEC or NSEC3. Since NSEC signed zones are trivially enumerated, we confine this analysis to the use of XoT for either unsigned or NSEC3 signed zones. 
 
 On this basis, the knowledge that an attacker could still gather by monitoring encrypted zone transfers and correlating encrypted traffic with unencrypted events includes:
 
@@ -108,7 +108,7 @@ Factors that will complicate or defeat the extraction of such data by traffic an
 
 ## Why is such data leakage sensitive?
 
-It's not uncommon that in some organisations, the name of the zone might indicate its purpose and therefore knowing the size of the zone or how active it is might reveal general information about that organisations practices or activities. Depending on the organisation this could extend to information about specific individual, companies or growth in specific business areas.
+It's not uncommon that in some organisations, the name of the zone might indicate its purpose and therefore knowing the size of the zone or how active it is might reveal general information about that organisations practices or activities. Depending on the organisation this could extend to information about specific individual, companies or growth in specific business areas. It could also reveal specific maintanance activies or deployment of new features.
 
 
 # Padding for AXoT
