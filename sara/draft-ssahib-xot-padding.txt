@@ -67,18 +67,19 @@ Table of Contents
    2.  Conventions and Definitions
    3.  Threat Model
      3.1.  Why is such data leakage sensitive?
-   4.  Padding for AXoT
-     4.1.  Zone block size
-     4.2.  Zone step size
-     4.3.  Recommendations
-     4.4.  Examples
-   5.  Padding for IXoT
-   6.  Configurable Parameters
-     6.1.  Zone Block Size
-     6.2.  Message Block Size
-   7.  Security Considerations
-   8.  IANA Considerations
-   9.  Normative References
+   4.  Padding requests
+   5.  Padding for AXoT
+     5.1.  Zone block size
+     5.2.  Zone step size
+     5.3.  Recommendations
+     5.4.  Examples
+   6.  Padding for IXoT
+   7.  Configurable Parameters
+     7.1.  Zone Block Size
+     7.2.  Message Block Size
+   8.  Security Considerations
+   9.  IANA Considerations
+   10. Normative References
    Acknowledgments
    Authors' Addresses
 
@@ -198,7 +199,11 @@ Table of Contents
    or growth in specific business areas.  It could also reveal specific
    maintanance activies or deployment of new features.
 
-4.  Padding for AXoT
+4.  Padding requests
+
+   TODO
+
+5.  Padding for AXoT
 
    As mentioned in [I-D.draft-ietf-dprive-xfr-over-tls], the goal of
    padding AXoT responses would be two fold:
@@ -223,7 +228,7 @@ Table of Contents
    message is to be signed with, e.g., TSIG this must be done before the
    padding is applied.
 
-4.1.  Zone block size
+5.1.  Zone block size
 
    A simplistic option, following the premise of the Block-Length
    Padding strategy recommended in [RFC8467], would be to simply specify
@@ -260,20 +265,20 @@ Table of Contents
    block size much larger than the current zone size would provide
    increased protection but with increased overhead.
 
-4.2.  Zone step size
+5.2.  Zone step size
 
    An alternative approach that could be taken is to specify a minimum
    zone size and an block size for incremental overhead on that block
    size.....
 
-4.3.  Recommendations
+5.3.  Recommendations
 
    Primary implementations SHOULD provide a configurable zone block size
    based padding mechanism.
 
-4.4.  Examples
+5.4.  Examples
 
-5.  Padding for IXoT
+6.  Padding for IXoT
 
    As mentioned in [I-D.draft-ietf-dprive-xfr-over-tls], the goal of
    padding IXoT responses is to minimize leakage about zone update
@@ -316,7 +321,7 @@ Table of Contents
    particular for AXFR, that means that if the message is to be signed
    with, e.g., TSIG this must be done before the padding is applied.
 
-6.  Configurable Parameters
+7.  Configurable Parameters
 
    When we decide the configurable parameters - zone block size, message
    block size, we should consider the following things: * The number of
@@ -324,14 +329,14 @@ Table of Contents
    frequency that the zone is updated * Persistent connection is used or
    not * Size of the zone * The zone is signed or not
 
-6.1.  Zone Block Size
+7.1.  Zone Block Size
 
    Zone block size should be at least two times of the original zone
    length.  As we cannot hide whether the zone is signed, and NSEC or
    NSEC3 is used, the zone block size should also be at least two times
    of the length of the signed zone.
 
-6.2.  Message Block Size
+7.2.  Message Block Size
 
    *  AXoT: As the AXoT reponses are usually large, the signed zones and
       unsigned zones can use the same message block size.
@@ -340,15 +345,15 @@ Table of Contents
       than an unsigned zone, the message block size for a signed zone
       should be larger for an unsigned zone.
 
-7.  Security Considerations
+8.  Security Considerations
 
    TODO Security
 
-8.  IANA Considerations
+9.  IANA Considerations
 
    This document has no IANA actions.
 
-9.  Normative References
+10.  Normative References
 
    [I-D.draft-ietf-dprive-xfr-over-tls]
               Toorop, W., Dickinson, S., Sahib, S., Aras, P., and A.
