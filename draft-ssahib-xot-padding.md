@@ -111,6 +111,11 @@ Factors that will complicate or defeat the extraction of such data by traffic an
 It's not uncommon that in some organisations, the name of the zone might indicate its purpose and therefore knowing the size of the zone or how active it is might reveal general information about that organisations practices or activities. Depending on the organisation this could extend to information about specific individual, companies or growth in specific business areas. It could also reveal specific maintanance activies or deployment of new features.
 
 
+# Padding requests
+
+TODO
+
+
 # Padding for AXoT
 
 As mentioned in {{I-D.draft-ietf-dprive-xfr-over-tls}}, the goal of padding AXoT responses would be two fold:
