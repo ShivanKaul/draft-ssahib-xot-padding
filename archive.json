@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2020-11-03T00:43:07.826201+00:00",
+  "timestamp": "2020-11-17T00:46:13.928686+00:00",
   "repo": "ShivanKaul/draft-ssahib-xot-padding",
   "labels": [
     {
@@ -233,6 +233,34 @@
       "mergedBy": "hanzhang0116",
       "mergeCommit": {
         "oid": "4de5da636cc73cb567c13286b879fae033bdac55"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 10,
+      "id": "MDExOlB1bGxSZXF1ZXN0NTIxOTMwNDkw",
+      "title": "Work on threat model",
+      "url": "https://github.com/ShivanKaul/draft-ssahib-xot-padding/pull/10",
+      "state": "MERGED",
+      "author": "saradickinson",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2020-11-16T20:26:06Z",
+      "updatedAt": "2020-11-16T20:26:27Z",
+      "baseRepository": "ShivanKaul/draft-ssahib-xot-padding",
+      "baseRefName": "master",
+      "baseRefOid": "4de5da636cc73cb567c13286b879fae033bdac55",
+      "headRepository": "ShivanKaul/draft-ssahib-xot-padding",
+      "headRefName": "sara",
+      "headRefOid": "49bdd5d5cede2d7dc39842b801a17d266dfc969a",
+      "closedAt": "2020-11-16T20:26:27Z",
+      "mergedAt": "2020-11-16T20:26:27Z",
+      "mergedBy": "saradickinson",
+      "mergeCommit": {
+        "oid": "6de5c6825a98e99aa908bd2f42f75a2bca0734a3"
       },
       "comments": [],
       "reviews": []
